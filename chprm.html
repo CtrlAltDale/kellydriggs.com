@@ -1,0 +1,85 @@
+<html>
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var cards = [];
+        $(document).mouseup(function (e) {
+            clicked();
+        })
+        $(document).ready(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "chprm.tsv",
+                dataType: "text",
+                success: function (data) {
+                    processData(data);
+                }
+            });
+        });
+
+        function processData(allText) {
+            // allText = "chprm.csv"
+            var record_num = 4;  // or however many elements there are in each row
+            var allTextLines = allText.split(/\r\n|\n/);
+            var headings = allTextLines[0].split('\t');
+            var lines = [];
+
+            for (var i = 1; i < allTextLines.length; i++) {
+                var data = allTextLines[i].split('\t')
+                if (data.length === headings.length) {
+                    var tarr = [];
+                    for (var j = 0; j < headings.length; j++) {
+                        tarr.push(headings[j] + ":" + data[j])
+                    }
+                    lines.push(tarr);
+                }
+            }
+            cards = lines;
+            nextQuestion();
+        }
+
+        var canShow = false;
+
+        function clicked() {
+            console.log('clicked')
+            var ans = document.getElementById('answer');
+            if (canShow) {
+                ans.style.visibility = 'hidden';
+                nextQuestion();
+                canShow = false;
+            } else {
+                ans.style.visibility = 'visible';
+                canShow = true;
+            }
+        }
+
+        function nextQuestion() {
+            var line = cards[Math.floor(Math.random() * cards.length)]
+            var question = document.getElementById("question_text")
+            question.innerText = line[2].split(':')[1]
+            var answer = document.getElementById("answer_text")
+            answer.innerText = line[3].split(':')[1]
+            var meta = document.getElementById("question_meta")
+            var meta_text = line[0].split(':')[1] + ' ' + line[1]
+            meta.innerText = meta_text;
+        }
+
+    </script>
+</head>
+<body>
+<div id="question" class="question">
+    <h1>Question</h1>
+    <h6 id="question_meta">RF1</h6>
+    <h3 id="question_text">Some question or other</h3>
+</div>
+<div id="answer" class="answer" style="visibility: hidden">
+    <h1>Answer</h1>
+    <h3 id="answer_text">Some answer or other</h3>
+</div>
+</body>
+</html>

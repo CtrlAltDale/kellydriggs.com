@@ -1,0 +1,50 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Dane's Allowance Tracker</title>
+  <meta name="description" content="Dane's Allowance Tracker">
+  <meta name="author" content="Dale">
+  <script type="text/javascript">
+  	weekly_allowance_rate = 5;
+  	total_debits = 165.92
+  	total_allowance = 0
+  	function weeksFrom(d1, d2) {
+		return Math.round((d2 - d1) / (7 * 24 * 60 * 60 * 1000));
+	}
+	function getTotalAllowance() {
+		var time = Math.abs(weeksFrom(new Date(), new Date(2017,1,11)));
+		document.getElementById("total_amount").innerHTML = "$" + (time * weekly_allowance_rate + 75);
+		total_allowance = time * weekly_allowance_rate + 75;  
+	}
+	function setTotalDebits() {
+		document.getElementById("total_debits").innerHTML = "$" + total_debits;
+	}
+	function setCurrentTotal() {
+		currentTotal = total_allowance -  total_debits;
+		currentTotal = Math.round(currentTotal * 100);
+		currentTotal = currentTotal / 100;
+		document.getElementById("current_total").innerHTML = "$" + currentTotal;
+	}
+	function getAmounts() {
+		getTotalAllowance();
+		setTotalDebits();
+		setCurrentTotal();
+	}
+</script>
+</head>
+
+<body>
+	<h1>
+		Credits to Date: <div id="total_amount"></div>
+	</h1>
+	<h1>
+		Debits to Date:<div id="total_debits"></div>
+	</h1>
+	<h1>
+		Current Credit:<div id="current_total"></div>
+	<script>getAmounts()</script>
+</body>
+</html>
